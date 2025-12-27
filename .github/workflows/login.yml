@@ -23,5 +23,5 @@ jobs:
       - name: Run login script
         env:
           EMAIL: ${{ secrets.SKYVPN_EMAIL }}
-          PASSWORD: ${{ secrets.SKYVPN_PASSWORD }}
+          PASSWORD: ${{ secrets.SKYVPN_PASS }}
         run: python3 sky_login.py

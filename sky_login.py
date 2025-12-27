@@ -10,25 +10,35 @@ async def main():
 
         # 打开登录页面
         await page.goto("https://skyvpnx.com/auth/login")
-
-        # 填写账号密码（从环境变量读取）
-        await page.fill("#email", os.environ["EMAIL"])
-        await page.fill("#password", os.environ["PASSWORD"])
-
-        # 点击登录按钮
-        await page.click("#login_submit")
-
-        # 等待页面加载完成
         await page.wait_for_load_state("networkidle")
 
-        # 跳转到订阅页面
-        await page.goto("https://skyvpnx.com/user")
+        # 打印页面 HTML 前 500 字，确认是否是 Cloudflare 验证页
         html = await page.content()
+        print("=== 登录页面 HTML 前 500 字 ===")
+        print(html[:500])
 
-        if "订阅" in html or "用户中心" in html:
-            print("ok")
-        else:
-            print("登录失败")
+        try:
+            # 等待输入框出现
+            await page.wait_for_selector("#email", timeout=60000)
+            await page.fill("#email", os.environ["EMAIL"])
+            await page.fill("#password", os.environ["PASSWORD"])
+
+            # 点击登录按钮
+            await page.click("#login_submit")
+            await page.wait_for_load_state("networkidle")
+
+            # 跳转到订阅页面
+            await page.goto("https://skyvpnx.com/user")
+            html_after = await page.content()
+            print("=== 登录后页面 HTML 前 500 字 ===")
+            print(html_after[:500])
+
+            if "订阅" in html_after or "用户中心" in html_after:
+                print("ok")
+            else:
+                print("登录失败")
+        except Exception as e:
+            print("未找到登录表单，可能还在 Cloudflare 验证页:", e)
 
         await browser.close()
 
