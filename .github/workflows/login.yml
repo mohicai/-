@@ -1,9 +1,9 @@
 name: SkyVPNX Login
 
 on:
-  push:
+  push:   # 每次 push 自动触发
     branches:
-      - main   # 当 main 分支有提交时触发
+      - main
 
 jobs:
   login:
@@ -16,11 +16,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Playwright
+      - name: Install Playwright + Xvfb
         run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
           pip install playwright
           playwright install chromium
           playwright install-deps
+          # 启动虚拟显示
+          Xvfb :99 -screen 0 1280x800x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Run login script
         env:
