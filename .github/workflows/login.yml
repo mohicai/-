@@ -1,7 +1,11 @@
 name: SkyVPNX Login
 
 on:
-  workflow_dispatch:   # 手动触发
+  push:
+    branches:
+      - main   # 当 main 分支有提交时触发
+      # 如果你想所有分支都触发，可以写成:
+      # - '**'
 
 jobs:
   login:
@@ -25,3 +29,11 @@ jobs:
           EMAIL: ${{ secrets.SKYVPN_EMAIL }}
           PASSWORD: ${{ secrets.SKYVPN_PASS }}
         run: python3 sky_login.py
+
+      - name: Upload HTML artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: skyvpnx-html
+          path: |
+            login_page.html
+            user_page.html
