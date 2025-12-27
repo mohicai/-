@@ -34,4 +34,5 @@ async def main():
 
         await browser.close()
 
+
 asyncio.run(main())
