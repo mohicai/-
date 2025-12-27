@@ -9,7 +9,7 @@ async def main():
         page = await context.new_page()
 
         # 打开登录页面
-        await page.goto("https://skyvpnx.com/login")
+        await page.goto("https://skyvpnx.com/auth/login")
 
         # 填写账号密码（从环境变量读取）
         await page.fill("#email", os.environ["EMAIL"])
